@@ -1,58 +1,43 @@
 <template>
   <div class="allBox">
-    <input type="checkbox" @click="selectAll" :checked="flag" />
-    已完成：<span>{{ select }}</span> / 全部：<span>{{ allItem.length }}</span>
+    <input type="checkbox" @click="selectAll" :checked="select === todoList.length && select!=0 ? true:false" />
+    已完成：<span>{{ select }}</span> / 全部：<span>{{ todoList.length }}</span>
     <button @click="subTask">提交已完成任务</button>
   </div>
 </template>
 <script>
+import { mapState } from 'vuex';
 export default {
   name: "UserFooter",
   data() {
     return {
-      allItem: "",
-      select: "",
-      flag: false,
     };
+  },
+  computed:{
+      ...mapState('todoList',['todoList']),
+      select(){
+        return this.todoList.reduce((pre, curr) => {
+          return pre + (curr.done ? 1 : 0);
+        }, 0);
+      }
   },
   methods: {
     selectAll() {
-      this.allItem.forEach((el) => {
+      this.todoList.forEach((el) => {
         if (el.done === false) {
-          el.done = true;
-        } else if (this.select === this.allItem.length) {
-          el.done = false;
+          this.todoList.forEach(el => {
+            el.done = true;
+          })
+        } else{
+          this.todoList.forEach(el => {
+            el.done = false;
+          })
         }
       });
     },
-    subTask() {
-      console.log(this.allItem.filter(item=>!item.done ))
-      this.$bus.$emit('subTask');
+    subTask() { 
+        this.$store.commit('todoList/SUBTASK')
     },
-  },
-  watch: {
-    allItem: {
-      deep: true,
-      handler() {
-        this.select = this.allItem.reduce((pre, curr) => {
-          return pre + (curr.done ? 1 : 0);
-        }, 0);
-        if (this.select === this.allItem.length && this.select != 0) {
-          this.flag = true;
-        } else {
-          this.flag = false;
-        }
-      },
-    },
-  },
-  beforeMount() {
-    this.$bus.$on("allItem", (data) => {
-      this.allItem = data;
-    });
-  },
-
-  beforeDestroy() {
-    this.$bus.$off("allItem");
   },
 };
 </script>

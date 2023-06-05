@@ -4,6 +4,7 @@
 </template>
 <script>
 import { nanoid } from 'nanoid';
+
 export default {
   name: "UserHeader",
   data(){
@@ -11,11 +12,11 @@ export default {
 
     }
   },
+ 
   methods:{
     add(e){
-      if(e.target.value == '') return;
       const item = {id:nanoid(),context:e.target.value,done:false};
-      this.$bus.$emit('addItem',item);
+      this.$store.dispatch('todoList/add',item)
       e.target.value = '';
     }
   }

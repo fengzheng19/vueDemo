@@ -11,21 +11,21 @@
   </ul>
 </template>
 <script>
+import { mapState } from 'vuex';
 import UserTodo from "./UserTodo.vue";
-import { nanoid } from "nanoid";
+
 
 export default {
   name: "UserTodos",
   data() {
     return {
-      todoList: [
-        { id: nanoid(), context: "xxxx", done: false },
-        { id: nanoid(), context: "xxxxx", done: false },
-        { id: nanoid(), context: "xxxxxx", done: true },
-      ],
+      
     };
   },
   components: { UserTodo },
+  computed:{
+    ...mapState('todoList',['todoList'])
+  },
   methods: {
     getId(index) {
       let id = this.todoList.findIndex((el) => {
@@ -33,19 +33,6 @@ export default {
       });
       this.todoList.splice(id,1)
     },
-  },
-  mounted() {
-    this.$bus.$on("addItem", (data) => {
-      this.todoList.unshift(data);
-    });
-    this.$bus.$emit("allItem", this.todoList);
-    this.$bus.$on('subTask',()=>{
-        this.todoList =  this.todoList.filter(item=> !item.done)
-        this.$bus.$emit("allItem", this.todoList);
-      })
-  },
-  watch:{
-
   }
 };
 </script>

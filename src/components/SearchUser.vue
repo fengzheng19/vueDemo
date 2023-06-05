@@ -27,7 +27,7 @@ export default {
       return (() => {
         clearTimeout(this.timer);
         this.timer = setTimeout(() => {
-          this.$bus.$emit("showUsers", this.text);
+          this.$store.dispatch('userList/searchUser',this.text);
           console.log(1111)
         }, 700);
       })();

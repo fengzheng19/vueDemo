@@ -1,6 +1,8 @@
 <template>
   <div class="user-list">
     <ul>
+      <!-- <button @click="showMsge">show</button> -->
+      {{num}}-{{bigNum}}
       <li v-for="item in userList" :key="item.id">
         <a :href="item.html_url"><img :src="item.avatar_url" /></a>
         <p>{{ item.login }}</p>
@@ -9,29 +11,28 @@
   </div>
 </template>
 <script>
-import axios from "axios";
+
+import {  mapActions, mapGetters, mapState } from 'vuex';
 export default {
   name: "userList",
   data() {
     return {
-      userList: [],
     };
   },
+  computed:{
+      ...mapState('userList',['userList','num']),
+      ...mapGetters('userList',['bigNum'])
+  },
+  methods:{
+    ...mapActions('userList',{showMsg:'show'}),
+    showMsge(){
+      let a = 0;
+      this.showMsg(a);
+    }
+  },
   mounted() {
-    this.$bus.$on("showUsers", (text) => {
-      axios({
-        url: "https://api.github.com/search/users",
-        params: {
-          q: text,
-        },
-      })
-        .then(({ data: { items } }) => {
-          this.userList = items;
-        })
-        .catch((err) => {
-          console.log(err.message);
-        });
-    });
+      
+    this.$store.commit('userList/GETUSERS')
   },
 };
 </script>

@@ -43,9 +43,7 @@ export default {
   border: 1px solid #000;
   width: 500px;
   border-radius: 10px;
-}
-.main{
-  display: none;
+  margin: 10px auto;
 }
 
 
